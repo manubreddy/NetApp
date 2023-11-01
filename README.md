@@ -24,4 +24,8 @@ Here's an example of how you can run the script:
 
 ```python
 te_ce.py
-
+```
+#### NOTE
+1. Ensure you have the necessary permissions and access to the cluster nodes and input file.
+   
+3. Review the script's code and documentation for any additional requirements or instructions.
