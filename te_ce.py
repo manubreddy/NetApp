@@ -21,35 +21,34 @@ for node_section in node_sections:
     node_match = re.search(r'(\S+)', node_section)
     if node_match:
         node_name = node_match.group(1)
-    
+
     # Split the node section into sections for each interface
     interface_sections = re.split(r'-- interface\s+', node_section)
-    
-    for section in interface_sections[1:]:  # Skip the first empty element
+
+    for interface_section in interface_sections[1:]:  # Skip the first empty element
         # Extract the interface name
-        interface_match = re.search(r'\s*([\w\d-]+)\s+\(\d+ days', section)
+        interface_match = re.search(r'\s*([\w\d-]+)\s+\(', interface_section)
         if interface_match:
             interface_name = interface_match.group(1)
-        
+
         # Check for total errors in RECEIVE and TRANSMIT sections
-        receive_errors_match = re.search(r'RECEIVE[\s\S]*?Total errors:\s+(\d+)', section)
-        transmit_errors_match = re.search(r'TRANSMIT[\s\S]*?Total errors:\s+(\d+)', section)
-        
-        if receive_errors_match or transmit_errors_match:
-            receive_errors = int(receive_errors_match.group(1)) if receive_errors_match else 0
-            transmit_errors = int(transmit_errors_match.group(1)) if transmit_errors_match else 0
-            total_errors = receive_errors + transmit_errors
-            
-            if total_errors > 0:
-                # Generate and add the command to the total_error_commands list
-                total_command = f"node run -node {node_name} -command ifstat -z {interface_name}"
-                total_error_commands.append(total_command)
+        receive_errors_match = re.search(r'RECEIVE[\s\S]*?Total errors:\s+(\d+)', interface_section)
+        transmit_errors_match = re.search(r'TRANSMIT[\s\S]*?Total errors:\s+(\d+)', interface_section)
+
+        receive_errors = int(receive_errors_match.group(1)) if receive_errors_match else 0
+        transmit_errors = int(transmit_errors_match.group(1)) if transmit_errors_match else 0
+        total_errors = receive_errors + transmit_errors
+
+        if total_errors > 0:
+            # Generate and add the command to the total_error_commands list
+            total_command = f"node run -node {node_name} -command ifstat -z {interface_name}"
+            total_error_commands.append(total_command)
 
 # Print the commands for clearing Total Errors
 for command in total_error_commands:
     print(command)
 
-
+#CRC error section
 # Read data from the input file
 with open(input_file, 'r') as file:
     data = file.read()
@@ -74,7 +73,7 @@ for node_section in node_sections:
     
     for section in interface_sections[1:]:  # Skip the first empty element
         # Extract the interface name
-        interface_match = re.search(r'\s*([\w\d-]+)\s+\(\d+ days', section)
+        interface_match = re.search(r'\s*([\w\d-]+)\s+\(', section)
         if interface_match:
             interface_name = interface_match.group(1)
         
